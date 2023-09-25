@@ -2,7 +2,7 @@
 
 
 ## Description
-It is a custom implemetation of the Fast Fourier Transform (FFT) algorithm. 
+It is a custom, inefficient, unnecessary implementation of the Fast Fourier Transform (FFT) algorithm.
 
 ## Features
 
