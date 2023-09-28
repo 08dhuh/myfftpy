@@ -9,6 +9,8 @@ import cmath
 import logging
 import argparse
 
+#TODO: pad the input data array with zeros increase the sample size
+
 logging.basicConfig(format="%(name)s:%(levelname)s %(message)s", level=logging.INFO)
 log = logging.getLogger(__name__)
 
@@ -30,7 +32,7 @@ def check_input_type_and_size(input:list):
     flag1 = all(isinstance(i, (int, float, complex)) for i in input)
     logging.info(f"Each item in input should be numeric: {flag1}")
     #second flag: the size of the array is power of two, for best performance
-    flag2 = power_of_two(len(input))
+    flag2 = is_power_of_two(len(input))
     logging.info(f"size of the array: power of two? {flag2}")
     return flag1 and flag2
 
@@ -78,16 +80,24 @@ def myfftpy(input:list):
         FFT result of the input as a 1-D array of complex number
 
     """
-    assert check_input_type_and_size(input)
-    input = to_complex(input)
-    logging.info("Input type and size are correct")
+    
     return ditfft2(input)
 
-def to_complex(input:list):
-    return [complex(x) for x in input]
 
+def is_power_of_two(size:int):
+    """
+    Check if the given size is power of two
 
-def power_of_two(size:int):
+    Parameters
+    ----------
+    size: int
+        size of an array
+    
+    Returns
+    ----------
+    Boolean
+        True if the param is power of two
+    """
     return size & (size - 1) == 0 and size > 0
 
 def myfftpy_parser():
@@ -109,25 +119,51 @@ def myfftpy_parser():
                         )
     return parser
 
-def parse_input(input_str:str):
-    parsed_input = [float(i) for i in input_str.split(',')]
+def convert_input_to_complex(input_str:str) -> list:
+    """
+    Convert a string of complex numbers to a list of complex numbers
+
+    Parameters
+    ----------
+    input_str: str
+        a string of comma-separated complex numbers or floats
+    
+    Returns
+    --------
+    parsed_input: list
+        a list of complex numbers
+    """
+    input_list = input_str.split(',')
+    input_stripped = [i.replace(' ','') for i in input_list]
+    parsed_input = [complex(i) for i in input_stripped]
     return parsed_input
 
 def save_to_file(output, filename=None):
+    """
+    Writes the result to a given filepath
+    """
     if filename is None:
         filename= 'myfftpy/result_data/fft_results.csv'
     log.info(f'current storage path: {filename}')
     with open(filename, 'w') as f:
         for out in output:
-            print(f"{out.real} + {out.imag}j", file=f)
+            print(f"{out.real}+{out.imag}j,", file=f)
     log.info(f'stored the output to {filename}')
 
 
 def main():
     parser = myfftpy_parser()
     options = parser.parse_args()
-    input = parse_input(options.input)
-    assert input is not None
+
+    try:
+        input = convert_input_to_complex(options.input)
+    except ValueError as e:
+        log.error(e)
+        log.critical("Could not handle input argument")
+
+    assert input is not None and check_input_type_and_size(input)
+    logging.info("Input is the correct type")
+
     output = myfftpy(input)
     save_to_file(output, None)
 
