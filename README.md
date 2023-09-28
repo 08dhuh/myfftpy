@@ -20,4 +20,4 @@ On your terminal, navigate to the main directory of myfftpy module, and run the 
 
 python myfftpy/myfftpy.py --input "0.0,0.382683432,0.707106781,0.923879533,1.0,0.923879533,0.707106781,0.382683432,1.2246467991473532e-16,-0.382683432,-0.707106781,-0.923879533,-1.0,-0.923879533,-0.707106781,-0.382683432"
 
-replace the input argument with your desired input.
+Replace the input argument with your desired string containing only commas as delimiters. It can also handle complex numbers with Python complex format, but it cannot tolerate any delimiters other than commas.
