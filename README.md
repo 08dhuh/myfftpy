@@ -3,7 +3,7 @@
 
 ## Description
 myfftpy is a custom implementation of the Cooley-Tukey Fast Fourier Transform (FFT) algorithm in Python. 
-It's not 
+It's not efficient nor optimised.
 
 ## Dependencies
 refer to 'requirements.txt'
