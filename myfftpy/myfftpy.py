@@ -8,6 +8,8 @@ and outputs fft results as a 1D array of complex numbers.
 import cmath
 import logging
 import argparse
+import matplotlib.pyplot as plt
+import numpy as np
 
 #TODO: pad the input data array with zeros increase the sample size
 
@@ -157,6 +159,25 @@ def save_to_file(output, filename=None):
             print(f"{out.real}+{out.imag}j,", file=f)
     log.info(f'stored the output to {filename}')
 
+def plot_output(output):
+    fig, ax = plt.subplots()
+    x = np.arange(len(output))
+    output = np.array(output)
+    real = output.real
+    imag = output.imag
+
+    ax.plot(x, real, label="real")
+    ax.plot(x, imag, '--',label="imaginary")
+
+    ax.set_xlabel("freq")
+    ax.set_ylabel("amplitude")
+    ax.legend()
+
+    return fig
+
+def save_fig(fig, filepath):
+    fig.savefig(filepath)
+    plt.close(fig)
 
 def main():
     parser = myfftpy_parser()
@@ -173,6 +194,9 @@ def main():
 
     output = myfftpy(input)
     save_to_file(output, None)
+
+    fig = plot_output(output)
+    save_fig(fig, 'myfftpy/result_data/fft_results.png')
 
 if __name__=='__main__':
     main()
