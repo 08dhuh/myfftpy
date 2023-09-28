@@ -33,3 +33,20 @@ def test_ditfft2():
 
     abs_diff = np.abs(np_fft-my_fft)
     assert all( abs_diff < tolerance )
+
+
+def test_myfftpy_inverse():
+    from myfftpy.myfftpy import myfftpy
+    tolerance = 0.01
+    fs = 128
+    t = np.arange(0,1,1/fs)
+    signal = np.sin( 2*np.pi*t)
+
+    my_fft_inv = myfftpy(myfftpy(signal), True)
+    np_inv = np.fft.ifft(np.fft.fft(signal))
+
+    abs_diff = np.abs(my_fft_inv) - np.abs(signal)
+    np_diff = np.abs(np_inv) - np.abs(my_fft_inv)
+
+    assert all( abs_diff < tolerance)
+    assert all( np_diff < tolerance)

@@ -37,7 +37,7 @@ def check_input_type_and_size(input:list):
     return flag1 and flag2
 
 
-def ditfft2(input:list):
+def ditfft2(input:list, inverse=False):
     """
     computes 1-D Cooley Tukey FFT
 
@@ -54,18 +54,22 @@ def ditfft2(input:list):
     size = len(input)
     if size== 1:
         return [input[0]]
-    evens = ditfft2(input[::2])
-    odds = ditfft2(input[1::2])
+    evens = ditfft2(input[::2],inverse)
+    odds = ditfft2(input[1::2],inverse)
     
+    factor = cmath.exp( 2j * cmath.pi / size) if inverse \
+        else cmath.exp( -2j * cmath.pi / size) 
+
     result = [0] * size
     for k in range(size // 2):
         even = evens[k]
-        odd = cmath.exp( -2j * cmath.pi * k / size) * odds[k]
+        odd = factor**k * odds[k]
         result[k] = even + odd
         result[k + size // 2] = even - odd
+
     return result
 
-def myfftpy(input:list):
+def myfftpy(input:list, inverse=False):
     """
     Performs FFT on the input array
 
@@ -81,8 +85,11 @@ def myfftpy(input:list):
 
     """
     
-    return ditfft2(input)
-
+    result = ditfft2(input)
+    if inverse:
+        size = len(result)
+        result = [r/size for r in result]
+    return result
 
 def is_power_of_two(size:int):
     """
